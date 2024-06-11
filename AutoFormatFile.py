@@ -21,6 +21,6 @@ def organize_files_by_date(folder_path):
     
     print("檔案已經按照日期分類完成。")
 
-# 使用者輸入資料夾路徑
-folder_path = input("請輸入要整理的資料夾路徑: ")
+# 使用者輸入資料夾路徑，並替換反斜杠為正斜杠
+folder_path = input("請輸入要整理的資料夾路徑: ").replace("\\", "/")
 organize_files_by_date(folder_path)
