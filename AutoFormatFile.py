@@ -4,11 +4,13 @@ from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
-def get_exif_data(image):
+from GetCityName import get_city_name_nominatim
+
+def get_exif_data(image_path):
     """Extract EXIF data from an image."""
     exif_data = {}
     try:
-        img = Image.open(image)
+        img = Image.open(image_path)
         info = img._getexif()
         if info:
             for tag, value in info.items():
@@ -22,7 +24,7 @@ def get_exif_data(image):
                 else:
                     exif_data[tag_name] = value
     except Exception as e:
-        print(f"Error reading EXIF data from {image}: {e}")
+        print(f"Error reading EXIF data from {image_path}: {e}")
     return exif_data
 
 def get_lat_lon(gps_info):
@@ -43,23 +45,23 @@ def get_lat_lon(gps_info):
 
     return lat, lon
 
-def get_city_name_nominatim(lat, lon):
-    """Mock function to simulate city name lookup."""
-    # Replace this with your actual implementation
-    return "CityName"
-
 def organize_photos_by_date_and_city(folder_path):
-    # 取得目標資料夾中的所有檔案
+    # 獲取目標資料夾中的所有檔案
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
     city_cache = {}
+    move_operations = []
 
-    for file in files:
+    # 檔案類型過濾，只處理 JPG 檔案
+    image_files = [f for f in files if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]
+
+    for file in image_files:
         file_path = os.path.join(folder_path, file)
         exif_data = get_exif_data(file_path)
         file_date = None
         city_name = None
+        date_city_folder_path = None
 
-        # 取得檔案的修改日期
+        # 獲取檔案的修改日期
         file_mod_time = os.path.getmtime(file_path)
         file_date = datetime.fromtimestamp(file_mod_time).strftime('%Y-%m-%d')
 
@@ -76,12 +78,29 @@ def organize_photos_by_date_and_city(folder_path):
         if city_name:
             date_city_folder_path = os.path.join(folder_path, f"{file_date}_{city_name}")
         else:
-            date_folder_path = os.path.join(folder_path, file_date)
+            date_city_folder_path = os.path.join(folder_path, file_date)
 
         if not os.path.exists(date_city_folder_path):
             os.makedirs(date_city_folder_path)
-        # 移動檔案到對應的日期/城市資料夾
-        shutil.move(file_path, os.path.join(date_city_folder_path, file))
+
+        # 記錄移動操作
+        move_operations.append((file_path, os.path.join(date_city_folder_path, file)))
+
+        # 檢查是否存在相同名稱的RAW檔
+        raw_file_extensions = ['.nef', '.cr2', '.arw', '.dng', '.orf', '.rw2']
+        file_name, file_ext = os.path.splitext(file)
+        for ext in raw_file_extensions:
+            raw_file = file_name + ext
+            raw_file_path = os.path.join(folder_path, raw_file)
+            if os.path.exists(raw_file_path):
+                move_operations.append((raw_file_path, os.path.join(date_city_folder_path, raw_file)))
+
+    # 執行移動操作
+    for src, dst in move_operations:
+        try:
+            shutil.move(src, dst)
+        except Exception as e:
+            print(f"Error moving file {src} to {dst}: {e}")
 
     print("照片已經按照日期和城市名稱分類完成。")
 
