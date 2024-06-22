@@ -49,7 +49,7 @@ def get_city_name_nominatim(lat, lon):
     return "CityName"
 
 def organize_photos_by_date_and_city(folder_path):
-    # 獲取目標資料夾中的所有檔案
+    # 取得目標資料夾中的所有檔案
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
     city_cache = {}
 
@@ -59,7 +59,7 @@ def organize_photos_by_date_and_city(folder_path):
         file_date = None
         city_name = None
 
-        # 獲取檔案的修改日期
+        # 取得檔案的修改日期
         file_mod_time = os.path.getmtime(file_path)
         file_date = datetime.fromtimestamp(file_mod_time).strftime('%Y-%m-%d')
 
