@@ -1,4 +1,5 @@
 import unittest
+import mock_open
 from unittest.mock import patch, MagicMock
 from AutoFormatFile import get_exif_data, get_lat_lon, organize_photos_by_date_and_city
 import os
@@ -13,7 +14,7 @@ class TestGetExifData(unittest.TestCase):
         mock_exif = {305: 'TestCamera', 306: '2020:01:01 00:00:00'}
         mock_image._getexif.return_value = mock_exif
         mock_open.return_value = mock_image
-        expected = {'Make': 'TestCamera', 'DateTime': '2020:01:01 00:00:00'}
+        expected = {'Software': 'TestCamera', 'DateTime': '2020:01:01 00:00:00'}
         self.assertEqual(get_exif_data('dummy.jpg'), expected)
 
 class TestGetLatLon(unittest.TestCase):
