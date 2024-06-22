@@ -46,10 +46,25 @@ def get_lat_lon(gps_info):
 
     return lat, lon
 
-def organize_photos_by_date_and_city(folder_path):
+def check_and_create_config(config_file_path):
+    """Check if the config file exists, and create it with default values if it does not."""
+    if not os.path.exists(config_file_path):
+        default_config = {
+            "use_city_name": True
+        }
+        with open(config_file_path, 'w') as config_file:
+            json.dump(default_config, config_file)
+        print(f"配置文件 '{config_file_path}' 不存在，已創建默認配置文件。")
     # 讀取配置文件
-    with open('config.json', 'r') as config_file:
+    with open(config_file_path, 'r') as config_file:
         config = json.load(config_file)
+    return config
+
+def organize_photos_by_date_and_city(folder_path):
+
+    # 讀取配置文件
+    config_file_path = 'config.json'
+    config = check_and_create_config(config_file_path)
     
     use_city_name = config.get("use_city_name", False)
 
@@ -93,3 +108,6 @@ def organize_photos_by_date_and_city(folder_path):
 # 使用者輸入資料夾路徑，並替換反斜杠為正斜杠
 folder_path = input("請輸入要整理的資料夾路徑: ").replace("\\", "/")
 organize_photos_by_date_and_city(folder_path)
+
+# 等待用戶輸入，以防視窗立即關閉
+input("Press Enter to exit...")
