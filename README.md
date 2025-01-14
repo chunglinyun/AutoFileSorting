@@ -18,6 +18,10 @@
 - 根據經緯度查詢城市名稱。
 - 根據照片拍攝日期和城市名稱分類照片。
 - 支援將相同名稱的 RAW 檔案和 JPEG 檔案一起移動。
+- 支援人臉識別，將照片按人物分組。
+- 支援重複照片檢測，避免存儲多個相同的照片。
+- 支援視頻文件和其他媒體類型的整理。
+- 提供圖形用戶界面（GUI），便於操作。
 
 ## 設定文件
 這個文件用來設定是否需要根據城市名稱來分類照片。文件內容如下：
@@ -32,6 +36,8 @@
 Python 3.6 或更高版本
 需要安裝的 Python 套件：
 Pillow
+OpenCV
+imagehash
 
 ## 安裝
 1. 克隆這個儲存庫到你的本地機器：
@@ -47,6 +53,8 @@ cd organize_photos_by_date_and_city
 
 ```
 pip install Pillow
+pip install opencv-python
+pip install imagehash
 ```
 
 ## 使用說明
@@ -58,6 +66,13 @@ python organize_photos.py
 2. 根據提示輸入要整理的照片資料夾路徑。
 
 3. 程式會自動根據照片的拍攝日期和 GPS 資訊進行分類，並將照片移動到對應的資料夾中。
+
+4. 使用圖形用戶界面（GUI）進行操作：
+
+```
+python AutoFormatFile.py
+```
+5. 在彈出的窗口中選擇要整理的資料夾，程式會自動進行分類。
 
 ## 示例
 假設有一個名為 photos 的資料夾，其中包含以下照片：
@@ -90,6 +105,17 @@ photos/
 3. RAW 檔案無法識別？
 
     - 確保 RAW 檔案的副檔名在支援列表中（例如 .nef, .cr2, .arw, .dng, .orf, .rw2）。
+4. 如何安裝 OpenCV 和 imagehash 庫？
+
+    - 使用以下命令安裝 OpenCV：
+    ```
+    pip install opencv-python
+    ```
+    - 使用以下命令安裝 imagehash：
+    ```
+    pip install imagehash
+    ```
+
 ## 貢獻
 歡迎提交問題和請求合併（Pull Requests）。在提交請求之前，請確保你的代碼風格和現有項目保持一致，並且已經通過所有測試。
 
