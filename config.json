@@ -1,3 +1,4 @@
 {
-    "use_city_name": false
+    "use_city_name": false,
+    "detect_faces": false
 }
